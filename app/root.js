@@ -1,13 +1,16 @@
-import React, {Component} from 'react';
+import React from "react";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import App from "components/App";
 
-class Root extends Component {
-    render() {
-        return (
-            <div>
-                Hello, world!
-            </div>
-        );
-    }
-}
+const Root = () => {
+    return (
+        <Router>
+            <Switch>
+                <Route path="/" component={App} exact/>
+            </Switch>
+        </Router>
+    );
+};
 
 export default Root;
+
