@@ -1,14 +1,23 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const config = {
     
     mode: "production",
     
+    target: "web",
+    
     entry: [
-        "./bitshares-ui-style-guide/index.js"
+        "index.js"
     ],
+    
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
     
     context: path.resolve(__dirname, "app"),
     
@@ -20,54 +29,41 @@ const config = {
         ]
     },
     
-    externals: {
-        react             : {
-            "commonjs" : "react",
-            "commonjs2": "react",
-            "amd"      : "react",
-            "root"     : "React"
-        },
-        "react-dom"       : {
-            "commonjs" : "react-dom",
-            "commonjs2": "react-dom",
-            "amd"      : "react-dom",
-            "root"     : "ReactDOM"
-        },
-        "react-router-dom": {
-            "commonjs" : "react-router-dom",
-            "commonjs2": "react-router-dom",
-            "amd"      : "react-router-dom",
-            "root"     : "ReactDOM"
-        },
-        "antd"            : {
-            "commonjs" : "antd",
-            "commonjs2": "antd",
-            "amd"      : "antd"
-        }
-    },
-    
     output: {
-        filename      : "[name].js",
-        path          : path.resolve(__dirname, "dist"),
-        publicPath    : "",
-        library       : "bitshares",
-        libraryTarget : "umd",
-        umdNamedDefine: true
+        path         : path.resolve(__dirname, 'docs'),
+        publicPath   : '/',
+        chunkFilename: '[name].[chunkhash].bundle.js',
+        filename     : '[name].[chunkhash].js',
     },
     
     plugins: [
         new MiniCssExtractPlugin({
-            filename     : 'styles/style.css',
-            chunkFilename: '[id].css',
-            ignoreOrder  : false, // Enable to remove warnings about conflicting order
+            filename: '[name].css',
         }),
         new OptimizeCssAssetsPlugin({
-            assetNameRegExp: /\.css$/g,
-            cssProcessor: require('cssnano'),
+            assetNameRegExp          : /\.css$/g,
+            cssProcessor             : require('cssnano'),
             cssProcessorPluginOptions: {
-                preset: ['default', { discardComments: { removeAll: true } }],
+                preset: ['default', {discardComments: {removeAll: true}}],
             },
-            canPrint: true
+            canPrint                 : true
+        }),
+        new HtmlWebpackPlugin({
+            template: 'index.html',
+            favicon : 'favicon.ico',
+            minify  : {
+                removeComments               : true,
+                collapseWhitespace           : true,
+                removeRedundantAttributes    : true,
+                useShortDoctype              : true,
+                removeEmptyAttributes        : true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash             : true,
+                minifyJS                     : true,
+                minifyCSS                    : true,
+                minifyURLs                   : true
+            },
+            inject  : true
         })
     ],
     

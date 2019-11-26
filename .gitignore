@@ -63,3 +63,4 @@ npm-debug.log
 # github pages config
 
 docs/CNAME
+dist/
